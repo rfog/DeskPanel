@@ -1,0 +1,18 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DeskPanel.Mac.Feeds.FeedSummaryWindow"
+        Title="Resumen"
+        Width="760" Height="640"
+        WindowStartupLocation="CenterOwner">
+  <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="12">
+    <TextBlock x:Name="TitleText" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,8" />
+    <TextBox x:Name="MarkdownBox" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Menlo" />
+    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8" Margin="0,10,0,0">
+      <Button x:Name="RegenerateButton" Content="Regenerar" />
+      <Button x:Name="CopyButton" Content="Copiar" />
+      <Button x:Name="SaveButton" Content="Guardar .md" />
+      <Button x:Name="CancelButton" Content="Cancelar" />
+    </StackPanel>
+    <TextBlock x:Name="StatusText" Grid.Row="3" Margin="0,8,0,0" FontSize="12" Opacity="0.75" TextWrapping="Wrap" />
+  </Grid>
+</Window>

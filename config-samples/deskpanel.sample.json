@@ -1,0 +1,86 @@
+// {ConfigDirectory}\deskpanel.json — shared across machines through the cloud folder.
+// Comments and trailing commas are accepted; the app rewrites the file without comments when it saves.
+{
+  "HotKey": { "Modifiers": "Control, Alt", "Key": "Space" },
+  // Feeds.TranslationPrompt (null = built-in): placeholders {segmentos} (JSON array), {n}, {idioma}. Edited in Settings > Feeds.
+
+  // "Caché": a second copy of every feed PDF, summary and processed audio (with its transcript and summary). Empty = off.
+  "CacheFolder": "{Cloud}/DeskPanel/Cache",
+
+  // Global system shortcuts (Settings > Atajos). Shared, so every PC gets the same keys; untick "Enabled" where unwanted.
+  "SystemKeys": {
+    "VolumeUp":   { "Enabled": true, "Modifiers": "Control, Alt", "Key": "Up" },
+    "VolumeDown": { "Enabled": true, "Modifiers": "Control, Alt", "Key": "Down" },
+    "Mute":       { "Enabled": true, "Modifiers": "Control, Alt", "Key": "M" },
+    "ScreenOff":  { "Enabled": true, "Modifiers": "Control, Alt", "Key": "H" }
+  },
+
+  "Feeds": {
+    "Sources": [
+      // Inoreader: Preferences > Folders and tags > (folder or tag) > "RSS output" gives a URL like this.
+      { "Name": "Inoreader - Leer", "Url": "https://www.inoreader.com/stream/user/1234567890/tag/Leer" }
+    ],
+    "OutputFolder": "{Cloud}/DeskPanel/Feeds",
+    "DefaultProfile": "A4",
+    // Optional extra CSS applied after the profile's, relative to the config directory. Pick it in Configurar > Feeds.
+    "CustomCssFile": "css/personalizado-ejemplo.css",
+    "Profiles": [
+      { "Name": "A4", "CssFile": "css/default.css", "PageWidthMm": 210, "PageHeightMm": 297,
+        "MarginTopMm": 15, "MarginBottomMm": 15, "MarginLeftMm": 15, "MarginRightMm": 15, "Scale": 1.0, "PrintBackgrounds": true,
+        "ShowHeaderFooter": true },
+      { "Name": "A5 lectura", "CssFile": "css/reader.css", "PageWidthMm": 148, "PageHeightMm": 210,
+        "MarginTopMm": 12, "MarginBottomMm": 12, "MarginLeftMm": 12, "MarginRightMm": 12, "Scale": 1.0, "PrintBackgrounds": false,
+        "ShowHeaderFooter": true }
+    ],
+    "ReadStateFile": "feeds-read-state.json",
+    "ReadStateRetentionDays": 180,
+    "OpenPreviewAfterGenerate": true
+  },
+
+  // Audio in InputFolder is cleaned (DeepFilterNet), transcribed (Whisper) and summarised (see "Ai").
+  // The original is sent to the Recycle Bin only when every enabled step succeeded.
+  "Audio": {
+    "InputFolder": "{Cloud}/Podcast/Entrada",
+    "CleanAudioFolder": "{Cloud}/Podcast/Audio",
+    "TranscriptFolder": "{Cloud}/Podcast/Transcripciones",
+    "SummaryFolder": "{Cloud}/Podcast/Resumenes",
+    "CleanNoise": true,
+    "Transcribe": true,
+    "Summarize": true,
+    "Language": "es",
+    // File inside <ToolsFolder>\models, or an absolute path. tools\Install-AudioTools.ps1 downloads these.
+    "WhisperModelFile": "ggml-large-v3-turbo.bin"
+    // "ToolsFolder": "D:\\Herramientas\\DeskPanel"   // machine specific; default %LOCALAPPDATA%\DeskPanel\tools
+  },
+
+  // API keys are NOT stored here (this file is synced): Settings > IA keeps them DPAPI-encrypted in %LOCALAPPDATA%.
+  "Ai": {
+    "Provider": "LmStudio",              // LmStudio | Gemini | Claude
+    "LmStudioUrl": "http://localhost:1234/v1",
+    "LmStudioModel": "",
+    "GeminiModel": "gemini-2.5-pro",
+    "ClaudeModel": "claude-sonnet-5-5",
+    "Temperature": 0.4
+  },
+
+  "Search": {
+    // Local on purpose. Copy {IndexStorageFolder}\<Name> to another machine to skip a full reindex.
+    "IndexStorageFolder": "%LOCALAPPDATA%/DeskPanel/Indexes",
+    "MaxResults": 200,
+    "Indexes": [
+      {
+        "Name": "Documentos",
+        "BaseRoot": "{Docs}",
+        "IncludedFolders": [ "Manuales", "Papers/2025" ],
+        "Extensions": [ ".pdf", ".txt", ".md" ],
+        "Recursive": true,
+        "SkipCloudPlaceholders": true
+      }
+    ]
+  },
+
+  "QuickFolders": [
+    { "Name": "Proyectos", "Path": "{Nas}/Proyectos" },
+    { "Name": "Descargas", "Path": "%USERPROFILE%/Downloads" }
+  ]
+}

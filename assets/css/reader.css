@@ -1,0 +1,36 @@
+/*
+  DeskPanel – reading style for small pages (A5 / e-reader).
+  Serif body with a slightly looser leading, since it is meant for long-form reading rather than filing.
+*/
+:root {
+  --ink: #1f1f1f;
+  --muted: #666;
+  --line: #ddd;
+  --accent: #16656e;
+}
+
+html { font-size: 11.5pt; }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: Georgia, "Cambria", "Times New Roman", serif;
+  line-height: 1.6;
+  hyphens: auto;
+  text-align: justify;
+}
+
+.dp-header { margin-bottom: 1.4em; text-align: left; }
+.dp-title { font-size: 1.6em; line-height: 1.2; margin: 0 0 0.4em; font-weight: 700; }
+.dp-meta { color: var(--muted); font-size: 0.85em; font-style: italic; margin: 0; }
+.dp-link { display: none; }
+
+.dp-content h1, .dp-content h2, .dp-content h3 { text-align: left; line-height: 1.25; break-after: avoid; }
+.dp-content p { margin: 0 0 0.7em; orphans: 3; widows: 3; }
+.dp-content a { color: inherit; text-decoration: underline; text-decoration-color: var(--line); }
+.dp-content img { display: block; max-width: 100%; height: auto; margin: 0.8em auto; break-inside: avoid; }
+.dp-content figure { margin: 1em 0; break-inside: avoid; }
+.dp-content figcaption { color: var(--muted); font-size: 0.85em; text-align: center; }
+.dp-content blockquote { margin: 1em 1.2em; font-style: italic; }
+.dp-content pre { white-space: pre-wrap; font-size: 0.85em; text-align: left; }
+.dp-content img[width="1"], .dp-content img[height="1"] { display: none !important; }

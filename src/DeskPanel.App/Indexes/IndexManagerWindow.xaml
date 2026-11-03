@@ -1,0 +1,119 @@
+<Window x:Class="DeskPanel.App.Indexes.IndexManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:indexes="clr-namespace:DeskPanel.App.Indexes"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=indexes:IndexManagerViewModel}"
+        x:ClassModifier="internal"
+        Title="Índices" Width="1000" Height="720" WindowStartupLocation="CenterScreen"
+        Style="{StaticResource ToolWindowStyle}">
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+  </Window.Resources>
+  <Grid Margin="12">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="230" />
+      <ColumnDefinition Width="16" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <DockPanel Grid.Column="0">
+      <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
+        <Button Style="{StaticResource FlatButton}" Command="{Binding NewIndexCommand}" Content="Nuevo" Margin="0,0,6,0" />
+        <Button Style="{StaticResource FlatButton}" Command="{Binding DeleteIndexCommand}" Content="Quitar" Margin="0,0,6,0" />
+        <Button Style="{StaticResource FlatButton}" Command="{Binding UpdateAllIndexCommand}" Content="Actual. Todos" />
+      </StackPanel>
+      <TextBlock DockPanel.Dock="Top" Text="Índices configurados" Style="{StaticResource SectionTitle}" Margin="2,0,0,6" />
+      <ListBox ItemsSource="{Binding Definitions}" SelectedItem="{Binding SelectedDefinition}" DisplayMemberPath="Name"
+               BorderBrush="{StaticResource LineBrush}" />
+    </DockPanel>
+
+    <!-- Without a selected index the form is not attached to anything, so it is disabled (see HasSelection) instead of
+         silently ignoring clicks. "Abrir almacén" does not need an index and stays enabled. -->
+    <DockPanel Grid.Column="2">
+      <Grid DockPanel.Dock="Top" IsEnabled="{Binding HasSelection}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Nombre" VerticalAlignment="Center" Margin="0,0,10,6" />
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                 Padding="4,3" Margin="0,0,0,6" />
+
+        <TextBlock Grid.Row="1" Text="Carpeta base" VerticalAlignment="Center" Margin="0,0,10,6" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding BaseRoot, UpdateSourceTrigger=LostFocus}" Padding="4,3" Margin="0,0,6,6"
+                 ToolTip="Con «Elegir…» se guarda con el alias de Configurar › General (p. ej. {Synology}/Revistas), para que el índice sirva en otro equipo" />
+        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Margin="0,0,0,6">
+          <Button Style="{StaticResource FlatButton}" Command="{Binding BrowseBaseRootCommand}" Content="Elegir…" Margin="0,0,6,0" />
+          <Button Style="{StaticResource FlatButton}" Command="{Binding LoadTreeCommand}" Content="Cargar árbol" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="2" Text="Extensiones" VerticalAlignment="Center" Margin="0,0,10,6" />
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding ExtensionsText, UpdateSourceTrigger=PropertyChanged}" Padding="4,3" Margin="0,0,6,6"
+                 TextWrapping="Wrap" MaxHeight="64" VerticalScrollBarVisibility="Auto"
+                 ToolTip="Separadas por espacios. Vacío = todos los tipos compatibles (incluido el contenido de los .zip)" />
+        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,6">
+          <CheckBox Content="Recursivo" IsChecked="{Binding Recursive}" Margin="0,0,10,0" />
+          <CheckBox Content="Omitir ficheros solo en la nube" IsChecked="{Binding SkipCloudPlaceholders}" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="3" Grid.ColumnSpan="3" Text="{Binding IndexInfo}" Foreground="{StaticResource MutedBrush}"
+                   TextWrapping="Wrap" Margin="0,2,0,8" />
+      </Grid>
+
+      <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+          <Button Style="{StaticResource FlatButton}" Command="{Binding OpenIndexStorageCommand}" Content="Abrir almacén" Margin="0,0,6,0"
+                  ToolTip="Carpeta con los índices: cópiala a otro equipo para evitar reindexar" />
+          <Button Style="{StaticResource FlatButton}" Command="{Binding SaveCommand}" Content="Guardar" Margin="0,0,6,0"
+                  IsEnabled="{Binding HasSelection}" />
+          <Button Style="{StaticResource FlatButton}" Command="{Binding RebuildIndexCommand}" Content="Reconstruir" Margin="0,0,6,0"
+                  IsEnabled="{Binding HasSelection}" />
+          <Button Style="{StaticResource PrimaryButton}" Command="{Binding UpdateIndexCommand}" Content="Actualizar índice" Margin="0,0,6,0"
+                  IsEnabled="{Binding HasSelection}" />
+          <Button Style="{StaticResource FlatButton}" Command="{Binding CancelCommand}" Content="Cancelar"
+                  Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        </StackPanel>
+        <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+          <ProgressBar Height="6" Maximum="{Binding ProgressMaximum}" Value="{Binding ProgressValue}"
+                       Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" Margin="0,0,0,4" />
+          <TextBlock Text="{Binding Status}" Foreground="{StaticResource MutedBrush}" TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+      </DockPanel>
+
+      <TextBlock DockPanel.Dock="Top" Text="Carpetas incluidas (marcar una carpeta incluye todo su contenido)"
+                 Style="{StaticResource SectionTitle}" Margin="2,0,0,6" />
+      <TreeView ItemsSource="{Binding Tree}" BorderBrush="{StaticResource LineBrush}" IsEnabled="{Binding HasSelection}">
+        <TreeView.ItemContainerStyle>
+          <Style TargetType="TreeViewItem">
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+          </Style>
+        </TreeView.ItemContainerStyle>
+        <TreeView.ItemTemplate>
+          <HierarchicalDataTemplate DataType="{x:Type indexes:FolderNode}" ItemsSource="{Binding Children}">
+            <CheckBox IsChecked="{Binding IsChecked}" IsEnabled="{Binding IsSelectable}" Margin="0,1">
+              <TextBlock Text="{Binding Name}" />
+            </CheckBox>
+          </HierarchicalDataTemplate>
+        </TreeView.ItemTemplate>
+      </TreeView>
+    </DockPanel>
+
+    <Border Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="18,12" CornerRadius="6"
+            Background="{StaticResource RaisedBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
+            Visibility="{Binding HasNoSelection, Converter={StaticResource BoolToVisibility}}">
+      <TextBlock TextAlignment="Center" TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" MaxWidth="360"
+                 Text="No hay ningún índice seleccionado.&#10;Pulsa «Nuevo» para crear uno (después podrás elegir su carpeta base) o selecciona uno de la lista." />
+    </Border>
+  </Grid>
+</Window>

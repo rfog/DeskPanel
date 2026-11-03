@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:feeds="using:DeskPanel.Mac.Feeds"
+        x:Class="DeskPanel.Mac.Feeds.FeedsWindow"
+        Title="Feeds"
+        Width="1100" Height="720"
+        WindowStartupLocation="CenterScreen">
+  <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="12">
+
+    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12" Margin="0,0,0,10">
+      <ComboBox x:Name="SourceBox" Width="240" />
+      <ComboBox x:Name="ProfileBox" Width="160" />
+      <CheckBox x:Name="ShowReadBox" Content="Mostrar leídas" VerticalAlignment="Center" />
+      <Button x:Name="RefreshButton" Content="Actualizar" />
+      <Button x:Name="OpenFolderButton" Content="Abrir carpeta de salida" />
+    </StackPanel>
+
+    <Grid Grid.Row="1" ColumnDefinitions="1.15*,10,*">
+      <ListBox x:Name="EntriesList" Grid.Column="0">
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="feeds:FeedItem">
+            <StackPanel Spacing="2" Margin="2,4" Opacity="{Binding TitleOpacity}">
+              <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap" />
+              <TextBlock Text="{Binding Meta}" FontSize="12" Opacity="0.7" />
+              <TextBlock Text="{Binding Flags}" FontSize="11" Foreground="SteelBlue" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <!-- Native WebKit view: right-clicking it picks the article stylesheet (see FeedsWindow.ShowCssMenu). -->
+      <NativeWebView x:Name="PreviewView" Grid.Column="2" />
+    </Grid>
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8" Margin="0,10,0,0">
+      <Button x:Name="SummarizeButton" Content="Resumir" />
+      <Button x:Name="TranslateButton" Content="Traducir" />
+      <Button x:Name="FullButton" Content="Artículo completo" />
+      <Button x:Name="PdfButton" Content="PDF" />
+      <Button x:Name="ToggleReadButton" Content="Marcar leída" />
+      <Button x:Name="OpenLinkButton" Content="Abrir enlace" />
+    </StackPanel>
+
+    <TextBlock x:Name="StatusText" Grid.Row="3" Margin="0,8,0,0" FontSize="12" Opacity="0.75" TextWrapping="Wrap"
+               Text="Pulsa Actualizar para descargar las fuentes." />
+  </Grid>
+</Window>

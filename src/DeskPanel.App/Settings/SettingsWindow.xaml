@@ -1,0 +1,504 @@
+<Window x:Class="DeskPanel.App.Settings.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:settings="clr-namespace:DeskPanel.App.Settings"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
+        x:ClassModifier="internal"
+        Title="Configuración" Width="800" Height="680" MinWidth="680" MinHeight="480"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource ToolWindowStyle}">
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    <Style x:Key="FieldLabel" TargetType="TextBlock">
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Margin" Value="0,0,12,10" />
+    </Style>
+    <Style x:Key="FieldBox" TargetType="TextBox">
+      <Setter Property="Padding" Value="4,3" />
+      <Setter Property="Margin" Value="0,0,6,10" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="BrowseButton" TargetType="Button" BasedOn="{StaticResource FlatButton}">
+      <Setter Property="Content" Value="Elegir…" />
+      <Setter Property="Margin" Value="0,0,0,10" />
+    </Style>
+    <Style x:Key="Hint" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="Margin" Value="0,0,0,10" />
+    </Style>
+  </Window.Resources>
+
+  <DockPanel Margin="12">
+    <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+      <Button DockPanel.Dock="Left" Style="{StaticResource FlatButton}" Command="{Binding EditJsonCommand}"
+              Content="Editar JSON…" ToolTip="Perfiles PDF, accesos rápidos e índices avanzados se editan a mano" />
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Style="{StaticResource FlatButton}" Command="{Binding CancelCommand}" Content="Cancelar" Margin="0,0,6,0" IsCancel="True" />
+        <Button Style="{StaticResource PrimaryButton}" Command="{Binding SaveCommand}" Content="Guardar" IsDefault="True" />
+      </StackPanel>
+    </DockPanel>
+
+    <TabControl>
+      <!-- General -->
+      <TabItem Header="General">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="16">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <TextBlock Grid.Row="0" Text="Atajo del panel" Style="{StaticResource FieldLabel}" />
+          <TextBox x:Name="HotKeyBox" Grid.Row="0" Grid.Column="1" Style="{StaticResource FieldBox}" IsReadOnly="True"
+                   Text="{Binding HotKeyText, Mode=OneWay}" IsReadOnlyCaretVisible="False"
+                   ToolTip="Haz clic y pulsa la combinación deseada" PreviewKeyDown="OnHotKeyPreviewKeyDown" />
+          <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Hint}"
+                     Text="Haz clic en el cuadro y pulsa la combinación. Debe incluir al menos Ctrl, Alt, Mayús o Win." />
+
+          <CheckBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,4"
+                    Content="No cerrar el panel al perder el foco" IsChecked="{Binding KeepOpenOnFocusLoss}" />
+
+          <!-- Carpetas base (alias de este equipo) -->
+          <StackPanel Grid.Row="3" Grid.ColumnSpan="3" Margin="0,16,0,0">
+            <TextBlock Text="Carpetas base de este equipo (alias)" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+            <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,6"
+                       Text="{}Cada alias es un nombre (p. ej. Synology) que en CADA equipo apunta a la carpeta real de ese equipo. En la configuración y en los índices se guarda {Synology}/Scrapbook en lugar de D:\Drive\Scrapbook, y así lo mismo vale en otro ordenador cuyo Synology esté en otra ruta. Define aquí los alias antes de elegir carpetas en las demás pestañas." />
+            <DockPanel>
+              <StackPanel DockPanel.Dock="Right" Margin="10,0,0,0">
+                <Button Style="{StaticResource FlatButton}" Command="{Binding AddRootCommand}" Content="Añadir" Margin="0,0,0,6" />
+                <Button Style="{StaticResource FlatButton}" Command="{Binding BrowseRootPathCommand}" Content="Elegir ruta…" Margin="0,0,0,6"
+                        ToolTip="Elige la carpeta del alias seleccionado" />
+                <Button Style="{StaticResource FlatButton}" Command="{Binding RemoveRootCommand}" Content="Quitar" />
+              </StackPanel>
+              <DataGrid ItemsSource="{Binding Roots}" SelectedItem="{Binding SelectedRoot}" AutoGenerateColumns="False"
+                        CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                        MinHeight="90" MaxHeight="150" BorderBrush="{StaticResource LineBrush}"
+                        HorizontalGridLinesBrush="{StaticResource LineBrush}" Background="{StaticResource RaisedBrush}"
+                        RowBackground="{StaticResource RaisedBrush}">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="Alias" Width="140" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" />
+                  <DataGridTextColumn Header="Carpeta en este equipo" Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" />
+                </DataGrid.Columns>
+              </DataGrid>
+            </DockPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+              <Button Style="{StaticResource FlatButton}" Command="{Binding TestFolderCommand}" Content="Probar una carpeta…"
+                      ToolTip="Elige una carpeta y muestra cómo se guardaría con estos alias" />
+              <TextBlock Text="{Binding RootTestResult}" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"
+                         Margin="10,0,0,0" TextWrapping="Wrap" />
+            </StackPanel>
+          </StackPanel>
+
+          <StackPanel Grid.Row="4" Grid.ColumnSpan="3" Margin="0,16,0,0">
+            <TextBlock Text="Carpeta de configuración" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <TextBox Style="{StaticResource FieldBox}" Text="{Binding ConfigDirectory, UpdateSourceTrigger=PropertyChanged}"
+                       ToolTip="{Binding ConfigDirectoryPlaceholder}" />
+              <Button Grid.Column="1" Style="{StaticResource BrowseButton}" Command="{Binding BrowseConfigDirectoryCommand}" />
+            </Grid>
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="Aquí vive deskpanel.json (y los CSS y el estado de leídos). Puede usar un alias de arriba (p. ej. {Synology}/DeskPanel). Déjalo vacío para usar %LOCALAPPDATA%\DeskPanel. Se guarda en machine.json, propio de este equipo. Al cambiarla se copia la configuración actual; si el destino ya tiene una, se te preguntará cuál usar." />
+          </StackPanel>
+
+          <StackPanel Grid.Row="5" Grid.ColumnSpan="3" Margin="0,16,0,0">
+            <TextBlock Text="Caché" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <TextBox Style="{StaticResource FieldBox}" Text="{Binding CacheFolder, UpdateSourceTrigger=PropertyChanged}" />
+              <Button Grid.Column="1" Style="{StaticResource BrowseButton}" Command="{Binding BrowseCacheCommand}" />
+            </Grid>
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="Repositorio alternativo: aquí se guarda además una copia de cada PDF generado, de los resúmenes de entradas y de PDF, y del audio procesado con su transcripción y su resumen. Los originales siguen en sus carpetas; si falla la copia, el proceso no se interrumpe. Déjala vacía para no copiar nada. Puede usar un alias (p. ej. {Synology}/Cache) y se guarda en la configuración compartida." />
+          </StackPanel>
+        </Grid>
+        </ScrollViewer>
+      </TabItem>
+
+      <!-- Feeds -->
+      <TabItem Header="Feeds">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <DockPanel Margin="16">
+          <Grid DockPanel.Dock="Bottom" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Carpeta de PDF" Style="{StaticResource FieldLabel}" />
+            <TextBox Grid.Column="1" Style="{StaticResource FieldBox}" Text="{Binding FeedsOutputFolder, UpdateSourceTrigger=PropertyChanged}" />
+            <Button Grid.Column="2" Style="{StaticResource BrowseButton}" Command="{Binding BrowseFeedsOutputCommand}" />
+
+            <TextBlock Grid.Row="1" Text="Carpeta de archivo" Style="{StaticResource FieldLabel}" />
+            <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource FieldBox}" Text="{Binding FeedsArchiveFolder, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="El botón «Archivar PDF» del panel mueve aquí los PDF, en subcarpetas año\mes según su fecha de creación" />
+            <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource BrowseButton}" Command="{Binding BrowseFeedsArchiveCommand}" />
+
+            <TextBlock Grid.Row="2" Text="Carpeta de resúmenes" Style="{StaticResource FieldLabel}" />
+            <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource FieldBox}" Text="{Binding FeedsSummaryFolder, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="El botón «Guardar .md» de la ventana de resumen guarda aquí" />
+            <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource BrowseButton}" Command="{Binding BrowseFeedsSummaryCommand}" />
+
+            <TextBlock Grid.Row="3" Text="CSS personalizado" Style="{StaticResource FieldLabel}" />
+            <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding CssFiles}" SelectedItem="{Binding SelectedCss}"
+                      Margin="0,0,6,10" Padding="4,3"
+                      ToolTip="Se aplica después del CSS del perfil, así que lo que defina prevalece" />
+            <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" Margin="0,0,0,10">
+              <Button Style="{StaticResource FlatButton}" Command="{Binding EditCssCommand}" Content="Editar" Margin="0,0,6,0" />
+              <Button Style="{StaticResource FlatButton}" Command="{Binding OpenCssFolderCommand}" Content="Carpeta CSS" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="5" Grid.ColumnSpan="3" Margin="0,6,0,0">
+              <TextBlock Text="Prompt del resumen de una entrada" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+              <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,6"
+                         Text="{}Instrucciones para el modelo de la pestaña IA al pulsar «Resumir». Marcadores: {texto} (el artículo), {titulo}, {url} (la web original), {fuente} (nombre del feed) e {idioma}. Si no incluyes {texto}, se añade al final." />
+              <TextBox Text="{Binding FeedsSummaryPrompt, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" AcceptsTab="False"
+                       TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Height="220"
+                       FontFamily="Cascadia Mono, Consolas" FontSize="12" Padding="6" BorderBrush="{StaticResource LineBrush}" Margin="0,0,0,8" />
+              <Button Style="{StaticResource FlatButton}" Command="{Binding RestoreFeedsSummaryPromptCommand}" Content="Restaurar el prompt por defecto"
+                      HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="6" Grid.ColumnSpan="3" Margin="0,14,0,0">
+              <TextBlock Text="Prompt de la traducción al español" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+              <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,6"
+                         Text="{}Instrucciones para el modelo de la pestaña IA al pulsar «Traducir» en una entrada. Marcadores: {segmentos} (los fragmentos de texto a traducir, como array JSON), {n} (cuántos son) e {idioma} (el idioma original, detectado solo). Importante: el modelo debe devolver un array JSON con exactamente {n} cadenas; así la traducción vuelve a su sitio sin tocar las imágenes ni el formato. Si no incluyes {segmentos}, se añade al final." />
+              <TextBox Text="{Binding FeedsTranslationPrompt, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" AcceptsTab="False"
+                       TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Height="200"
+                       FontFamily="Cascadia Mono, Consolas" FontSize="12" Padding="6" BorderBrush="{StaticResource LineBrush}" Margin="0,0,0,8" />
+              <Button Style="{StaticResource FlatButton}" Command="{Binding RestoreFeedsTranslationPromptCommand}" Content="Restaurar el prompt por defecto"
+                      HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <TextBlock Grid.Row="4" Grid.ColumnSpan="3" Style="{StaticResource Hint}"
+                       Text="Carpeta de archivo: el botón «Archivar PDF» del panel mueve ahí los PDF de la carpeta de PDF (año\mes según su fecha de creación) y actualiza el índice «Scrapbook», que debe estar creado sobre esa carpeta. Los CSS están en la subcarpeta css de la carpeta de configuración. default.css y reader.css son los de los perfiles «A4» y «A5 lectura» (se aplican siempre). El CSS personalizado se suma encima: copia en esa carpeta, por ejemplo, el CSS de Inoreader y elígelo aquí. Los cambios en la lista de ficheros se ven al reabrir este diálogo." />
+          </Grid>
+          <StackPanel DockPanel.Dock="Right" Margin="10,0,0,0">
+            <Button Style="{StaticResource FlatButton}" Command="{Binding AddFeedCommand}" Content="Añadir" Margin="0,0,0,6" />
+            <Button Style="{StaticResource FlatButton}" Command="{Binding RemoveFeedCommand}" Content="Quitar" />
+          </StackPanel>
+          <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}"
+                     Text="Salidas RSS de Inoreader (carpeta o etiqueta). El estado de leído se guarda en local." />
+          <DataGrid ItemsSource="{Binding Feeds}" SelectedItem="{Binding SelectedFeed}" AutoGenerateColumns="False" Height="170"
+                    CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                    BorderBrush="{StaticResource LineBrush}" HorizontalGridLinesBrush="{StaticResource LineBrush}"
+                    Background="{StaticResource RaisedBrush}" RowBackground="{StaticResource RaisedBrush}">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Nombre" Width="180" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" />
+              <DataGridTextColumn Header="URL" Width="*" Binding="{Binding Url, UpdateSourceTrigger=LostFocus}" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </DockPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <!-- Audio -->
+      <TabItem Header="Audio">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="16">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <TextBlock Grid.ColumnSpan="3" Style="{StaticResource Hint}"
+                     Text="Cada audio de la carpeta de entrada se limpia, se transcribe y se resume en local. Los resultados van a las carpetas de abajo y, si todo sale bien, el audio original se envía a la Papelera de reciclaje. El resumen usa el proveedor de la pestaña IA." />
+
+          <TextBlock Grid.Row="1" Text="Audios sin procesar" Style="{StaticResource FieldLabel}" />
+          <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource FieldBox}" Text="{Binding AudioInputFolder, UpdateSourceTrigger=PropertyChanged}" />
+          <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource BrowseButton}" Command="{Binding BrowseAudioFolderCommand}" CommandParameter="input" />
+
+          <TextBlock Grid.Row="2" Text="Audio procesado" Style="{StaticResource FieldLabel}" />
+          <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource FieldBox}" Text="{Binding AudioCleanFolder, UpdateSourceTrigger=PropertyChanged}" />
+          <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource BrowseButton}" Command="{Binding BrowseAudioFolderCommand}" CommandParameter="clean" />
+
+          <TextBlock Grid.Row="3" Text="Transcripciones" Style="{StaticResource FieldLabel}" />
+          <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource FieldBox}" Text="{Binding AudioTranscriptFolder, UpdateSourceTrigger=PropertyChanged}" />
+          <Button Grid.Row="3" Grid.Column="2" Style="{StaticResource BrowseButton}" Command="{Binding BrowseAudioFolderCommand}" CommandParameter="transcript" />
+
+          <TextBlock Grid.Row="4" Text="Resúmenes" Style="{StaticResource FieldLabel}" />
+          <TextBox Grid.Row="4" Grid.Column="1" Style="{StaticResource FieldBox}" Text="{Binding AudioSummaryFolder, UpdateSourceTrigger=PropertyChanged}" />
+          <Button Grid.Row="4" Grid.Column="2" Style="{StaticResource BrowseButton}" Command="{Binding BrowseAudioFolderCommand}" CommandParameter="summary" />
+
+          <StackPanel Grid.Row="5" Grid.ColumnSpan="3" Margin="0,10,0,0">
+            <TextBlock Text="Pasos del procesado" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+            <CheckBox Content="Limpieza de sonido" IsChecked="{Binding CleanNoise}" Margin="0,0,0,6" />
+            <CheckBox Content="Generar la transcripción" IsChecked="{Binding Transcribe}" Margin="0,0,0,6" />
+            <CheckBox Content="Generar el resumen" IsChecked="{Binding Summarize}" />
+          </StackPanel>
+
+          <TextBlock Grid.Row="6" Text="Idioma del audio" Style="{StaticResource FieldLabel}" Margin="0,16,12,10" />
+          <StackPanel Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,16,0,0">
+            <TextBox Width="50" Style="{StaticResource FieldBox}" Text="{Binding AudioLanguage, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="Código de idioma de Whisper: es, en, ca, fr…" />
+            <TextBlock Text="Modelo de Whisper" Style="{StaticResource FieldLabel}" Margin="14,0,12,10" />
+            <ComboBox IsEditable="True" Width="250" Margin="0,0,0,10" Padding="4,3" ItemsSource="{x:Static settings:SettingsViewModel.WhisperModelFiles}"
+                      Text="{Binding WhisperModelFile, UpdateSourceTrigger=PropertyChanged}"
+                      ToolTip="large-v3-turbo es el recomendado: casi la calidad de large-v3 y mucho más rápido" />
+          </StackPanel>
+
+          <StackPanel Grid.Row="7" Grid.ColumnSpan="3" Margin="0,6,0,0">
+            <TextBlock Text="Herramientas necesarias" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+            <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,6"
+                       Text="El audio usa ffmpeg (conversión), DeepFilterNet (ruido) y un modelo de Whisper (transcripción). No vienen con DeskPanel: se descargan con el botón o con el script Install-AudioTools.ps1." />
+            <TextBox Text="{Binding ToolsStatus, Mode=OneWay}" IsReadOnly="True" FontFamily="Cascadia Mono, Consolas" FontSize="12"
+                     TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" Padding="6" Background="{StaticResource SurfaceBrush}"
+                     BorderBrush="{StaticResource LineBrush}" Margin="0,0,0,8" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+              <Button Style="{StaticResource FlatButton}" Command="{Binding InstallAudioToolsCommand}" Content="Descargar herramientas…" Margin="0,0,6,0" />
+              <Button Style="{StaticResource FlatButton}" Command="{Binding RefreshAudioToolsCommand}" Content="Comprobar" Margin="0,0,6,0" />
+              <Button Style="{StaticResource FlatButton}" Command="{Binding OpenToolsFolderCommand}" Content="Abrir carpeta" />
+            </StackPanel>
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="En otro equipo: copia el fichero Install-AudioTools.ps1 (está en la carpeta assets\tools junto a DeskPanel.exe, y en la carpeta tools del proyecto) y ejecuta:" />
+            <TextBox Text="{Binding InstallCommandText, Mode=OneWay}" IsReadOnly="True" FontFamily="Cascadia Mono, Consolas" FontSize="11"
+                     TextWrapping="Wrap" Padding="6" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" />
+          </StackPanel>
+
+          <StackPanel Grid.Row="8" Grid.ColumnSpan="3" Margin="0,16,0,0">
+            <TextBlock Text="Prompt del resumen" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+            <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,6"
+                       Text="{}Instrucciones que recibe el modelo de la pestaña IA. Puedes usar {texto} (la transcripción), {idioma} y {origen} (transcripción o notas de un audio largo). Si no incluyes {texto}, se añade al final. El esquema Markdown del prompt es el que se guarda en el .md." />
+            <TextBox Text="{Binding SummaryPrompt, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" AcceptsTab="False"
+                     TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" MinHeight="230" MaxHeight="330"
+                     FontFamily="Cascadia Mono, Consolas" FontSize="12" Padding="6" BorderBrush="{StaticResource LineBrush}" Margin="0,0,0,8" />
+            <Button Style="{StaticResource FlatButton}" Command="{Binding RestoreSummaryPromptCommand}" Content="Restaurar el prompt por defecto"
+                    HorizontalAlignment="Left" />
+          </StackPanel>
+        </Grid>
+        </ScrollViewer>
+      </TabItem>
+
+      <!-- IA -->
+      <TabItem Header="IA">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="16">
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="Modelo de lenguaje usado para los resúmenes (y para lo que se añada en el futuro). Las claves se guardan cifradas con tu cuenta de Windows, solo en este equipo: no van a la carpeta sincronizada." />
+
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+
+              <TextBlock Text="Proveedor" Style="{StaticResource FieldLabel}" />
+              <ComboBox Grid.Column="1" Margin="0,0,6,10" Padding="4,3" ItemsSource="{x:Static settings:SettingsViewModel.AiProviders}"
+                        DisplayMemberPath="Label" SelectedItem="{Binding SelectedAiProvider}" />
+
+              <!-- LM Studio -->
+              <TextBlock Grid.Row="1" Text="URL del servidor" Style="{StaticResource FieldLabel}"
+                         Visibility="{Binding IsLmStudio, Converter={StaticResource BoolToVisibility}}" />
+              <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource FieldBox}" Text="{Binding LmStudioUrl, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="{Binding IsLmStudio, Converter={StaticResource BoolToVisibility}}"
+                       ToolTip="Por defecto http://localhost:1234/v1. Actívalo en LM Studio: pestaña Developer, Start Server." />
+              <TextBlock Grid.Row="2" Text="Token (opcional)" Style="{StaticResource FieldLabel}"
+                         Visibility="{Binding IsLmStudio, Converter={StaticResource BoolToVisibility}}" />
+              <PasswordBox x:Name="LmStudioTokenBox" Grid.Row="2" Grid.Column="1" Margin="0,0,6,10" Padding="4,3" Tag="lm"
+                           PasswordChanged="OnSecretChanged" Loaded="OnSecretBoxLoaded"
+                           Visibility="{Binding IsLmStudio, Converter={StaticResource BoolToVisibility}}" />
+
+              <!-- Gemini -->
+              <TextBlock Grid.Row="1" Text="Clave de API" Style="{StaticResource FieldLabel}"
+                         Visibility="{Binding IsGemini, Converter={StaticResource BoolToVisibility}}" />
+              <PasswordBox x:Name="GeminiKeyBox" Grid.Row="1" Grid.Column="1" Margin="0,0,6,10" Padding="4,3" Tag="gemini"
+                           PasswordChanged="OnSecretChanged" Loaded="OnSecretBoxLoaded"
+                           Visibility="{Binding IsGemini, Converter={StaticResource BoolToVisibility}}" />
+
+              <!-- Claude -->
+              <TextBlock Grid.Row="1" Text="Clave de API" Style="{StaticResource FieldLabel}"
+                         Visibility="{Binding IsClaude, Converter={StaticResource BoolToVisibility}}" />
+              <PasswordBox x:Name="ClaudeKeyBox" Grid.Row="1" Grid.Column="1" Margin="0,0,6,10" Padding="4,3" Tag="claude"
+                           PasswordChanged="OnSecretChanged" Loaded="OnSecretBoxLoaded"
+                           Visibility="{Binding IsClaude, Converter={StaticResource BoolToVisibility}}" />
+
+              <TextBlock Grid.Row="3" Text="Modelo" Style="{StaticResource FieldLabel}" />
+              <ComboBox Grid.Row="3" Grid.Column="1" IsEditable="True" Margin="0,0,6,10" Padding="4,3"
+                        ItemsSource="{Binding AiModels}" Text="{Binding AiModel, UpdateSourceTrigger=PropertyChanged}" />
+              <Button Grid.Row="3" Grid.Column="2" Style="{StaticResource BrowseButton}" Content="Listar modelos"
+                      Command="{Binding ListAiModelsCommand}" />
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+              <TextBlock Text="Temperatura" Style="{StaticResource FieldLabel}" Margin="0,0,12,0" />
+              <TextBox Width="50" Style="{StaticResource FieldBox}" Margin="0" Text="{Binding AiTemperature, UpdateSourceTrigger=PropertyChanged}"
+                       ToolTip="0 = más literal, 1 = más creativo. Para resúmenes, 0,3–0,5." />
+            </StackPanel>
+
+            <TextBlock Text="{Binding AiStatus}" Style="{StaticResource Hint}" />
+            <TextBlock Style="{StaticResource Hint}" Visibility="{Binding IsLmStudio, Converter={StaticResource BoolToVisibility}}"
+                       Text="LM Studio: carga el modelo desde su ventana, o activa la carga automática («Just-in-Time») en Developer › Server Settings para que se cargue al primer uso." />
+            <TextBlock Style="{StaticResource Hint}" Visibility="{Binding IsGemini, Converter={StaticResource BoolToVisibility}}"
+                       Text="Gemini: crea la clave en https://aistudio.google.com/apikey. El texto de la transcripción se envía a Google." />
+            <TextBlock Style="{StaticResource Hint}" Visibility="{Binding IsClaude, Converter={StaticResource BoolToVisibility}}"
+                       Text="Claude: crea la clave en https://console.anthropic.com. El texto de la transcripción se envía a Anthropic." />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <!-- Web -->
+      <TabItem Header="Web">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="16">
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="Servidor web de solo lectura para buscar en los índices desde el móvil o la tablet (búsqueda, histórico, vista previa en texto con salto entre coincidencias y descarga del fichero). Estos ajustes son de este equipo: no se sincronizan." />
+
+            <CheckBox Content="Activar el servidor web" IsChecked="{Binding WebEnabled}" Margin="0,0,0,12" FontWeight="SemiBold" />
+
+            <TextBlock Text="Quién puede conectar" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+            <ComboBox SelectedIndex="{Binding WebScopeIndex}" HorizontalAlignment="Left" MinWidth="360" Padding="6,4" Margin="0,0,0,10">
+              <ComboBoxItem Content="Dispositivos de mi red local (y de mi VPN)" />
+              <ComboBoxItem Content="Solo este equipo (localhost)" />
+            </ComboBox>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+              <TextBlock Text="Puerto" Style="{StaticResource FieldLabel}" Margin="0,0,12,0" />
+              <TextBox Width="80" Style="{StaticResource FieldBox}" Margin="0" Text="{Binding WebPort, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+
+            <TextBlock Text="Contraseña de acceso" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+            <PasswordBox x:Name="WebPasswordBox" Padding="4,3" Margin="0,0,0,4" MaxWidth="360" HorizontalAlignment="Left" Width="360"
+                         PasswordChanged="OnWebPasswordChanged" />
+            <TextBlock Text="{Binding WebPasswordInfo}" Style="{StaticResource Hint}" Margin="0,0,0,2" />
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="Mínimo 10 caracteres. Déjala vacía para conservar la actual. Se guarda solo como huella (hash), nunca el texto." />
+
+            <CheckBox Content="Permitir descargar ficheros" IsChecked="{Binding WebAllowDownloads}" Margin="0,4,0,6" />
+            <CheckBox Content="Permitir acciones: procesar audios y convertir feeds a PDF" IsChecked="{Binding WebAllowActions}" Margin="0,0,0,2" />
+            <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,12"
+                       Text="Con esto marcado, quien entre en la web (con la contraseña) puede poner a trabajar a este equipo: procesar los audios de la carpeta de entrada, descargar artículos, pedir resúmenes a la IA y generar PDF. Los ficheros no salen del equipo ni de sus carpetas. Desmarcado, la web solo busca." />
+
+            <TextBlock Text="Índices publicados en la web" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+            <ItemsControl ItemsSource="{Binding WebIndexChoices}" Margin="0,0,0,4">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <CheckBox Content="{Binding Name}" IsChecked="{Binding IsPublished}" Margin="0,2" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="Solo se pueden buscar y descargar ficheros de los índices marcados. Si no marcas ninguno, la web no muestra nada." />
+
+            <TextBlock Text="Servidor remoto" Style="{StaticResource SectionTitle}" Margin="0,8,0,6" />
+            <TextBox Text="{Binding WebRemoteAddress, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FieldBox}"
+                     HorizontalAlignment="Left" Width="360" Margin="0,0,0,4"
+                     ToolTip="Por ejemplo 192.168.1.200 o 192.168.1.200:8787" />
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="IP (o nombre) de otro equipo con el servidor web de DeskPanel. El botón «Web remota» del panel abre su interfaz en el navegador predeterminado. Sin puerto, usa el de arriba; también vale «ip:puerto» o una dirección completa http://…" />
+
+            <TextBlock Text="Estado" Style="{StaticResource SectionTitle}" Margin="0,8,0,6" />
+            <TextBox Text="{Binding WebStatus, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" Padding="6" MinHeight="44"
+                     Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" Margin="0,0,0,8" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+              <Button Style="{StaticResource FlatButton}" Command="{Binding RefreshWebStatusCommand}" Content="Actualizar estado" Margin="0,0,6,0" />
+              <Button Style="{StaticResource FlatButton}" Command="{Binding OpenWebPageCommand}" Content="Abrir en el navegador" Margin="0,0,6,0" />
+              <Button Style="{StaticResource FlatButton}" Command="{Binding CopyWebAddressCommand}" Content="Copiar dirección" />
+            </StackPanel>
+
+            <Border Background="#FFF4D6" BorderBrush="#E8C873" BorderThickness="1" CornerRadius="4" Padding="10,8">
+              <TextBlock TextWrapping="Wrap" Foreground="#3B3000"
+                         Text="Importante: es solo para tu red local. La conexión es HTTP sin cifrar, así que la contraseña viaja en claro por tu red (aceptable en una red de confianza; a través de la VPN de la Fritz!Box o del NAS ya va cifrada). No abras este puerto en el router para accederlo desde internet. La primera vez, Windows pedirá permitir DeskPanel en la red privada: acepta solo «Redes privadas»." />
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <!-- Búsqueda -->
+      <TabItem Header="Búsqueda">
+        <StackPanel Margin="16">
+          <TextBlock Text="Carpeta de los índices" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Style="{StaticResource FieldBox}" Text="{Binding IndexStorageFolder, UpdateSourceTrigger=PropertyChanged}" />
+            <Button Grid.Column="1" Style="{StaticResource BrowseButton}" Command="{Binding BrowseIndexStorageCommand}" />
+          </Grid>
+          <TextBlock Style="{StaticResource Hint}"
+                     Text="Debe estar fuera de las carpetas sincronizadas: los ficheros de Lucene y sus bloqueos no toleran Drive ni Synology. Al cambiarla, los índices existentes no se mueven; cópialos a mano o reconstrúyelos desde la ventana Índices." />
+        </StackPanel>
+      </TabItem>
+
+      <!-- Atajos -->
+      <TabItem Header="Atajos">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="16">
+            <TextBlock Style="{StaticResource Hint}"
+                       Text="Atajos de teclado globales del sistema (funcionan con cualquier programa en primer plano). Marca los que quieras usar; para cambiar uno, haz clic en su cuadro y pulsa la combinación nueva (necesita un modificador). Se guardan en la configuración compartida, así que valen para todos los equipos que la usen." />
+            <ItemsControl ItemsSource="{Binding SystemKeyRows}" Margin="0,8,0,8">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Column="0" IsChecked="{Binding Enabled}" VerticalAlignment="Top" Margin="0,3,10,0" ToolTip="Activar este atajo" />
+                    <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                      <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+                      <TextBlock Text="{Binding Description}" Style="{StaticResource Hint}" Margin="0,2,0,0" />
+                    </StackPanel>
+                    <TextBox Grid.Column="2" Style="{StaticResource FieldBox}" IsReadOnly="True" IsReadOnlyCaretVisible="False"
+                             Text="{Binding Text, Mode=OneWay}" IsEnabled="{Binding Enabled}" VerticalAlignment="Top" Margin="0"
+                             ToolTip="Haz clic y pulsa la combinación deseada" PreviewKeyDown="OnSystemKeyPreviewKeyDown" />
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Style="{StaticResource FlatButton}" Command="{Binding RestoreSystemKeysCommand}" HorizontalAlignment="Left"
+                    Content="Restaurar los atajos por defecto" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>

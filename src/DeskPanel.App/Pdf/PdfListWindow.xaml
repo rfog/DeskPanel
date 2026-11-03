@@ -1,0 +1,57 @@
+<Window x:Class="DeskPanel.App.Pdf.PdfListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:pdf="clr-namespace:DeskPanel.App.Pdf"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=pdf:PdfListViewModel}"
+        x:ClassModifier="internal"
+        Title="PDF generados" Width="760" Height="620" WindowStartupLocation="CenterScreen"
+        Style="{StaticResource ToolWindowStyle}">
+  <DockPanel>
+    <Border DockPanel.Dock="Top" Background="{StaticResource RaisedBrush}" BorderBrush="{StaticResource LineBrush}"
+            BorderThickness="0,0,0,1" Padding="12,8">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="8,0,0,0">
+          <Button Style="{StaticResource FlatButton}" Command="{Binding SummarizeCommand}" CommandParameter="{Binding Selected}"
+                  Margin="0,0,6,0" ToolTip="Resumir el PDF seleccionado con la IA (usa el texto del propio PDF)">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE8E4;" FontSize="14" Margin="0,0,6,0" />
+              <TextBlock Text="Resumir" />
+            </StackPanel>
+          </Button>
+          <Button Style="{StaticResource PrimaryButton}" Command="{Binding OpenCommand}" CommandParameter="{Binding Selected}"
+                  Margin="0,0,6,0" ToolTip="Abrir el PDF seleccionado para verlo y anotarlo">
+            <TextBlock Text="Abrir y anotar" />
+          </Button>
+          <Button Style="{StaticResource FlatButton}" Command="{Binding RefreshCommand}" Margin="0,0,6,0" ToolTip="Volver a leer la carpeta">
+            <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE72C;" FontSize="14" />
+          </Button>
+          <Button Style="{StaticResource FlatButton}" Command="{Binding OpenFolderCommand}" ToolTip="Abrir la carpeta de PDF">
+            <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE838;" FontSize="14" />
+          </Button>
+        </StackPanel>
+        <TextBox x:Name="FilterBox" Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" Padding="6,4"
+                 BorderBrush="{StaticResource LineBrush}" ToolTip="Filtra por nombre; Intro abre el seleccionado" />
+      </DockPanel>
+    </Border>
+
+    <Border DockPanel.Dock="Bottom" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Padding="12,5">
+      <TextBlock Text="{Binding Status}" Foreground="{StaticResource MutedBrush}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Status}" />
+    </Border>
+
+    <ListBox x:Name="List" ItemsSource="{Binding View}" SelectedItem="{Binding Selected}" BorderThickness="0"
+             Background="Transparent" HorizontalContentAlignment="Stretch"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.ScrollUnit="Pixel">
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="{x:Type pdf:PdfFileItem}">
+          <StackPanel Margin="4,5">
+            <TextBlock Text="{Binding Name}" FontSize="14" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding Meta}" FontSize="11" Foreground="{StaticResource MutedBrush}" Margin="0,2,0,0" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+  </DockPanel>
+</Window>

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>DeskPanel.Search</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Lucene.Net 4.8 is still labelled beta but is the de-facto stable line; all Lucene packages must share one version. -->
+    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00017" />
+    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00017" />
+    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00017" />
+    <PackageReference Include="Lucene.Net.Highlighter" Version="4.8.0-beta00017" />
+    <PackageReference Include="PdfPig" Version="0.1.16" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DeskPanel.Core\DeskPanel.Core.csproj" />
+  </ItemGroup>
+</Project>

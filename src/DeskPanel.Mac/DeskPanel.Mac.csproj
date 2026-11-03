@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>DeskPanel</AssemblyName>
+    <RootNamespace>DeskPanel.Mac</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Controls.WebView" Version="12.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Default CSS templates; copied to the profile on first run, never overwritten afterwards. -->
+    <Content Include="..\..\assets\css\*.css" Link="assets\css\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\LICENSE;..\..\THIRD-PARTY-NOTICES.md" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DeskPanel.Core\DeskPanel.Core.csproj" />
+    <ProjectReference Include="..\DeskPanel.Feeds\DeskPanel.Feeds.csproj" />
+    <ProjectReference Include="..\DeskPanel.Search\DeskPanel.Search.csproj" />
+    <ProjectReference Include="..\DeskPanel.Audio\DeskPanel.Audio.csproj" />
+    <ProjectReference Include="..\DeskPanel.Pdf.Chromium\DeskPanel.Pdf.Chromium.csproj" />
+  </ItemGroup>
+
+</Project>

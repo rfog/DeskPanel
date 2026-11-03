@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>DeskPanel.Remote</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Kestrel and minimal APIs come from the shared ASP.NET Core runtime (self-contained builds carry it). -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DeskPanel.Core\DeskPanel.Core.csproj" />
+    <ProjectReference Include="..\DeskPanel.Search\DeskPanel.Search.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The web page is embedded, so the server needs no files next to the exe. Keep wwwroot flat: embedded names have no folders. -->
+    <EmbeddedResource Include="wwwroot\*" />
+  </ItemGroup>
+</Project>

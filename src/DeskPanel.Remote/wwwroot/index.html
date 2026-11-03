@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#16656e">
+  <meta name="color-scheme" content="light dark">
+  <title>DeskPanel</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <!-- Sign in -->
+  <section id="login" class="login" hidden>
+    <form id="loginForm" class="card" autocomplete="on">
+      <img src="icon-192.png" alt="" class="logo" width="64" height="64">
+      <h1>DeskPanel</h1>
+      <label for="password">Contraseña</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button type="submit" class="primary">Entrar</button>
+      <p id="loginError" class="error" role="alert"></p>
+    </form>
+  </section>
+
+  <div id="app" hidden>
+    <!-- The three screens. Audio and Feeds only appear when the server allows actions. -->
+    <nav id="mainNav" class="nav" aria-label="Secciones">
+      <button type="button" class="navtab" data-view="Search" aria-current="page">Buscar</button>
+      <button type="button" class="navtab" data-view="Audio" hidden>Audio</button>
+      <button type="button" class="navtab" data-view="Feeds" hidden>Feeds</button>
+      <button id="btnLogout" type="button" class="navtab logout">Salir</button>
+    </nav>
+
+    <!-- Search -->
+    <div id="viewSearch">
+      <header class="topbar">
+        <form id="searchForm" role="search">
+          <input id="q" type="search" placeholder="Buscar en los índices…" autocomplete="off" enterkeyhint="search" maxlength="500"
+                 aria-label="Texto a buscar">
+          <button class="primary" type="submit">Buscar</button>
+        </form>
+        <div class="tools">
+          <button id="btnHistory" type="button" class="chip" aria-expanded="false">Histórico</button>
+          <button id="btnIndexes" type="button" class="chip" aria-expanded="false">Índices <span id="indexCount"></span></button>
+        </div>
+
+        <div id="historyPanel" class="panel" hidden>
+          <ul id="historyList" class="history"></ul>
+          <p id="historyEmpty" class="muted" hidden>Aún no hay búsquedas.</p>
+          <button id="btnClearHistory" type="button" class="link">Borrar todo el histórico</button>
+        </div>
+        <div id="indexPanel" class="panel" hidden>
+          <div id="indexList" class="indexlist"></div>
+          <p id="indexEmpty" class="muted" hidden>No hay índices publicados. Actívalos en Configurar › Web de DeskPanel.</p>
+        </div>
+      </header>
+
+      <p id="status" class="status" role="status"></p>
+
+      <main class="layout">
+        <section id="results" class="results" aria-label="Resultados"></section>
+
+        <section id="previewEmpty" class="preview-empty">Selecciona un resultado para ver su texto.</section>
+
+        <section id="preview" class="preview" hidden aria-label="Vista previa">
+          <div class="previewbar">
+            <button id="btnBack" type="button" class="chip" aria-label="Volver a los resultados">← Volver</button>
+            <div id="previewTitle" class="title"></div>
+          </div>
+          <div class="previewtools">
+            <button id="btnPrev" type="button" class="chip" aria-label="Coincidencia anterior">▲</button>
+            <button id="btnNext" type="button" class="chip" aria-label="Coincidencia siguiente">▼</button>
+            <span id="matchInfo" class="muted"></span>
+            <a id="btnDownload" class="chip download" href="#" hidden>Descargar</a>
+          </div>
+          <p id="previewNote" class="note" hidden></p>
+          <pre id="previewText" class="text"></pre>
+        </section>
+      </main>
+    </div>
+
+    <!-- Audio: what is waiting in the input folder, start, and how it goes. Files never travel through the web. -->
+    <div id="viewAudio" class="view" hidden>
+      <div class="viewhead">
+        <h2>Procesar audios</h2>
+        <button id="audioRefresh" type="button" class="chip">Actualizar</button>
+      </div>
+      <p id="audioWarning" class="note" hidden></p>
+      <p id="audioStatus" class="status" role="status"></p>
+
+      <div id="audioList" class="checklist"></div>
+      <p id="audioEmpty" class="muted pad" hidden>No hay audios pendientes en la carpeta de entrada.</p>
+
+      <div class="actions">
+        <button id="audioStart" type="button" class="primary">Procesar seleccionados</button>
+        <button id="audioCancel" type="button" class="chip" hidden>Cancelar</button>
+        <button id="audioToggleAll" type="button" class="link">Marcar / desmarcar todos</button>
+      </div>
+
+      <div id="audioRun" class="runbox" hidden>
+        <div id="audioStep" class="step"></div>
+        <progress id="audioProgress" max="100" value="0"></progress>
+      </div>
+
+      <ul id="audioResults" class="results-list"></ul>
+
+      <details id="audioLogBox" class="logbox" hidden>
+        <summary>Registro</summary>
+        <pre id="audioLog"></pre>
+      </details>
+    </div>
+
+    <!-- Feeds: pick an entry, see it with the PDF's style, convert; optionally full article and summary. -->
+    <div id="viewFeeds" class="view" hidden>
+      <div class="viewhead">
+        <h2>Feeds a PDF</h2>
+        <button id="feedsRefresh" type="button" class="chip">Actualizar</button>
+        <label class="inline"><input id="feedsRead" type="checkbox"> Leídos</label>
+        <label class="inline">Perfil <select id="feedsProfile"></select></label>
+      </div>
+      <p id="feedsStatus" class="status" role="status"></p>
+
+      <main class="layout">
+        <section id="feedList" class="results" aria-label="Entradas"></section>
+
+        <section id="feedEmpty" class="preview-empty">Selecciona una entrada para previsualizarla.</section>
+
+        <section id="feedPreview" class="preview" hidden aria-label="Vista previa de la entrada">
+          <div class="previewbar">
+            <button id="feedBack" type="button" class="chip" aria-label="Volver a la lista">← Volver</button>
+            <div id="feedTitle" class="title"></div>
+          </div>
+          <div class="previewtools">
+            <button id="feedFull" type="button" class="chip" title="Descargar el artículo completo de la web original">Completo</button>
+            <button id="feedSummarize" type="button" class="chip" title="Resumir con la IA">Resumir</button>
+            <button id="feedPdf" type="button" class="chip download">Convertir a PDF</button>
+          </div>
+          <p id="feedNote" class="note" role="status" hidden></p>
+          <div id="feedSummaryTabs" class="previewtools" hidden>
+            <button id="tabArticle" type="button" class="chip" aria-pressed="true">Artículo</button>
+            <button id="tabSummary" type="button" class="chip" aria-pressed="false">Resumen</button>
+            <button id="feedSaveSummary" type="button" class="chip download">Guardar resumen</button>
+          </div>
+          <iframe id="feedFrame" class="frame" title="Entrada" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+          <pre id="feedSummaryText" class="text" hidden></pre>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="actions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

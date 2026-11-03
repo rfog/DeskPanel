@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>VerificaFicheros</RootNamespace>
+    <AssemblyName>VerificaFicheros</AssemblyName>
+    <Product>VerificaFicheros</Product>
+    <Version>1.0.0</Version>
+    <!-- The code predates nullable annotations and implicit usings; converting it was a framework move, not a rewrite. -->
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DeskPanel.Core\DeskPanel.Core.csproj" />
+  </ItemGroup>
+</Project>

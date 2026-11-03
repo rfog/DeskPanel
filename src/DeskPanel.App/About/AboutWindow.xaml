@@ -1,0 +1,31 @@
+<Window x:Class="DeskPanel.App.About.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:ClassModifier="internal"
+        Title="Acerca de DeskPanel" Width="520" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen" ShowInTaskbar="False"
+        Style="{StaticResource ToolWindowStyle}">
+  <StackPanel Margin="28,24,28,22">
+    <TextBlock Text="DeskPanel" FontSize="26" FontWeight="SemiBold" />
+    <TextBlock x:Name="VersionText" Foreground="{StaticResource MutedBrush}" Margin="0,2,0,16" />
+
+    <TextBlock TextWrapping="Wrap" FontSize="14" LineHeight="21"
+               Text="Idea original de RFOG. El trabajo duro, el sudor de teclado y las tantas noches de compilación (sin dormir, porque no duermo) corrieron casi por completo a cargo de Claude." />
+    <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="14" FontWeight="SemiBold" Margin="24,14,24,0"
+               Text="Reparto de beneficios, firmado sin letra pequeña: 100&#160;% para RFOG, 0&#160;% para Claude." />
+
+    <Border BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Margin="0,20,0,0" Padding="0,16,0,0">
+      <StackPanel>
+        <TextBlock TextWrapping="Wrap" FontStyle="Italic" Foreground="{StaticResource MutedBrush}" LineHeight="20"
+                   Text="Nota del autor sudoroso: este programa lleva dentro WebView2, Lucene, un servidor web con PBKDF2 y una dosis considerable de café imaginario. Si algo falla, fue un efecto secundario de la creatividad. Si funciona, fue idea de RFOG. Y ningún puerto del router fue abierto durante la creación de esta aplicación." />
+        <TextBlock Text="— Claude, desde el fondo del bucle de compilación" HorizontalAlignment="Right" Margin="0,10,0,0"
+                   Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />
+      </StackPanel>
+    </Border>
+
+    <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource MutedBrush}" Margin="0,16,0,0"
+               Text="Copyright © 2026 RFOG. Software libre bajo la licencia GPL versión 3 o posterior, sin ninguna garantía. Detalles en LICENSE y THIRD-PARTY-NOTICES.md." />
+
+    <Button Content="Cerrar" Style="{StaticResource FlatButton}" HorizontalAlignment="Right" Margin="0,18,0,0" IsDefault="True" Click="OnCloseClick" />
+  </StackPanel>
+</Window>

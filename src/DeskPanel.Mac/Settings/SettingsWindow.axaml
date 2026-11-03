@@ -1,0 +1,186 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DeskPanel.Mac.Settings.SettingsWindow"
+        Title="Ajustes"
+        Width="720" Height="600"
+        WindowStartupLocation="CenterOwner">
+  <Grid RowDefinitions="*,Auto" Margin="12">
+    <TabControl Grid.Row="0">
+
+      <TabItem Header="General">
+        <StackPanel Spacing="6" Margin="12">
+          <TextBlock Text="Carpeta de CSS compartida con Windows" FontWeight="SemiBold" />
+          <TextBlock Text="Contiene los .css de los perfiles de PDF. Vacía = la carpeta css del perfil local." FontSize="12" Opacity="0.7" TextWrapping="Wrap" />
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <TextBox x:Name="CssFolderBox" />
+            <Button x:Name="CssFolderButton" Grid.Column="1" Content="Elegir…" />
+          </Grid>
+
+          <TextBlock Text="Caché (copia de lo generado)" FontWeight="SemiBold" Margin="0,12,0,0" />
+          <TextBlock Text="Vacía = no se copia nada." FontSize="12" Opacity="0.7" />
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <TextBox x:Name="CacheFolderBox" />
+            <Button x:Name="CacheFolderButton" Grid.Column="1" Content="Elegir…" />
+          </Grid>
+
+          <TextBlock Text="Ruta de Chrome" FontWeight="SemiBold" Margin="0,12,0,0" />
+          <TextBlock Text="Vacía = /Applications/Google Chrome.app/Contents/MacOS/Google Chrome" FontSize="12" Opacity="0.7" />
+          <TextBox x:Name="ChromePathBox" />
+
+          <TextBlock Text="Accesos rápidos (una por línea: Nombre | ruta)" FontWeight="SemiBold" Margin="0,12,0,0" />
+          <TextBlock Text="Salen en el grupo «Accesos» de la ventana Carpetas." FontSize="12" Opacity="0.7" />
+          <TextBox x:Name="QuickFoldersBox" AcceptsReturn="True" Height="90" TextWrapping="NoWrap" FontFamily="Menlo" FontSize="12" />
+
+          <TextBlock x:Name="ProfileText" FontSize="12" Opacity="0.6" Margin="0,16,0,0" TextWrapping="Wrap" />
+        </StackPanel>
+      </TabItem>
+
+      <TabItem Header="Feeds">
+        <ScrollViewer>
+          <StackPanel Spacing="6" Margin="12">
+            <TextBlock Text="Fuentes (una por línea: Nombre | URL)" FontWeight="SemiBold" />
+            <TextBox x:Name="SourcesBox" AcceptsReturn="True" Height="110" TextWrapping="NoWrap" FontFamily="Menlo" FontSize="12" />
+
+            <TextBlock Text="Carpeta de salida de los PDF" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+              <TextBox x:Name="OutputFolderBox" />
+              <Button x:Name="OutputFolderButton" Grid.Column="1" Content="Elegir…" />
+            </Grid>
+
+            <TextBlock Text="Carpeta de resúmenes (.md)" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+              <TextBox x:Name="SummaryFolderBox" />
+              <Button x:Name="SummaryFolderButton" Grid.Column="1" Content="Elegir…" />
+            </Grid>
+
+            <TextBlock Text="Perfil de PDF por defecto" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <ComboBox x:Name="DefaultProfileBox" Width="240" />
+
+            <TextBlock Text="CSS personalizado" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBlock Text="Se aplica después del CSS del perfil, así que lo que defina prevalece." FontSize="12" Opacity="0.7" />
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+              <ComboBox x:Name="CustomCssBox" HorizontalAlignment="Stretch" />
+              <Button x:Name="EditCssButton" Grid.Column="1" Content="Editar" />
+              <Button x:Name="OpenCssFolderButton" Grid.Column="2" Content="Carpeta CSS" />
+            </Grid>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <TabItem Header="IA">
+        <ScrollViewer>
+          <StackPanel Spacing="6" Margin="12">
+            <TextBlock Text="Proveedor" FontWeight="SemiBold" />
+            <ComboBox x:Name="ProviderBox" Width="240" />
+
+            <TextBlock Text="URL de LM Studio" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBox x:Name="LmUrlBox" />
+
+            <TextBlock Text="Modelo" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+              <ComboBox x:Name="ModelBox" HorizontalAlignment="Stretch" />
+              <Button x:Name="ListModelsButton" Grid.Column="1" Content="Listar modelos" />
+            </Grid>
+
+            <TextBlock Text="Token de LM Studio (opcional)" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBox x:Name="LmTokenBox" PasswordChar="•" />
+            <TextBlock Text="Clave de Gemini" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBox x:Name="GeminiKeyBox" PasswordChar="•" />
+            <TextBlock Text="Clave de Claude" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBox x:Name="ClaudeKeyBox" PasswordChar="•" />
+            <TextBlock Text="Las claves se guardan en el Llavero de macOS, nunca en el JSON." FontSize="12" Opacity="0.7" />
+
+            <TextBlock Text="Temperatura" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <NumericUpDown x:Name="TemperatureBox" Minimum="0" Maximum="1.5" Increment="0.1" FormatString="0.0" Width="140" HorizontalAlignment="Left" />
+
+            <TextBlock x:Name="AiStatusText" FontSize="12" Opacity="0.75" TextWrapping="Wrap" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <TabItem Header="Audio">
+        <ScrollViewer>
+          <StackPanel Spacing="6" Margin="12">
+            <TextBlock Text="Carpeta de entrada (audios sin procesar)" FontWeight="SemiBold" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+              <TextBox x:Name="AudioInputBox" />
+              <Button x:Name="AudioInputButton" Grid.Column="1" Content="Elegir…" />
+            </Grid>
+
+            <TextBlock Text="Audio procesado (.m4a)" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+              <TextBox x:Name="AudioCleanBox" />
+              <Button x:Name="AudioCleanButton" Grid.Column="1" Content="Elegir…" />
+            </Grid>
+
+            <TextBlock Text="Transcripciones (.txt)" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+              <TextBox x:Name="AudioTranscriptBox" />
+              <Button x:Name="AudioTranscriptButton" Grid.Column="1" Content="Elegir…" />
+            </Grid>
+
+            <TextBlock Text="Resúmenes (.md)" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+              <TextBox x:Name="AudioSummaryBox" />
+              <Button x:Name="AudioSummaryButton" Grid.Column="1" Content="Elegir…" />
+            </Grid>
+
+            <TextBlock Text="Pasos del procesado" FontWeight="SemiBold" Margin="0,12,0,0" />
+            <CheckBox x:Name="AudioCleanNoiseBox" Content="Quitar ruido (DeepFilterNet) y masterizar" />
+            <CheckBox x:Name="AudioTranscribeBox" Content="Transcribir (Whisper)" />
+            <CheckBox x:Name="AudioSummarizeBox" Content="Resumir con el proveedor de IA" />
+            <CheckBox x:Name="AudioCacheCleanBox" Content="Copiar también el audio procesado a la caché (la transcripción y el resumen siempre se copian)" />
+
+            <TextBlock Text="Modelo de Whisper (nombre dentro de la carpeta models, o ruta)" FontWeight="SemiBold" Margin="0,12,0,0" />
+            <TextBox x:Name="AudioModelBox" />
+
+            <TextBlock Text="Carpeta de herramientas (deep-filter y models)" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+              <TextBox x:Name="AudioToolsBox" />
+              <Button x:Name="AudioToolsButton" Grid.Column="1" Content="Elegir…" />
+            </Grid>
+            <TextBlock x:Name="AudioToolsStatus" FontSize="12" TextWrapping="Wrap" />
+            <TextBlock Text="Idioma: español (es). La subida a Spreaker sigue siendo manual." FontSize="12" Opacity="0.7" Margin="0,8,0,0" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <TabItem Header="DEVONthink">
+        <ScrollViewer>
+          <StackPanel Spacing="6" Margin="12">
+            <TextBlock Text="Conexión con el servidor MCP de DEVONthink" FontWeight="SemiBold" />
+            <ComboBox x:Name="DtTransportBox" Width="320" />
+            <TextBlock Text="HTTP usa el servidor ya en marcha (puerto y token). Proceso local arranca el ayudante MCP de DEVONthink y no necesita ni puerto ni token." FontSize="12" Opacity="0.7" TextWrapping="Wrap" />
+
+            <TextBlock Text="Puerto" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <NumericUpDown x:Name="DtPortBox" Minimum="1" Maximum="65535" Increment="1" FormatString="0" Width="160" HorizontalAlignment="Left" />
+
+            <TextBlock Text="Token de acceso" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBox x:Name="DtTokenBox" PasswordChar="•" />
+            <TextBlock Text="Se guarda en el Llavero de macOS, nunca en el JSON." FontSize="12" Opacity="0.7" />
+
+            <TextBlock Text="Ayudante MCP para «Proceso local» (vacío = el de DEVONthink.app)" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBox x:Name="DtCommandBox" />
+
+            <TextBlock Text="Máximo de resultados por búsqueda" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <NumericUpDown x:Name="DtMaxResultsBox" Minimum="1" Maximum="1000" Increment="50" FormatString="0" Width="160" HorizontalAlignment="Left" />
+
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+              <Button x:Name="DtReadButton" Content="Leer bases de datos" />
+            </StackPanel>
+            <TextBlock Text="Bases de datos guardadas" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBlock x:Name="DtDatabasesText" FontSize="12" TextWrapping="Wrap" />
+            <TextBlock x:Name="DtStatusText" FontSize="12" Opacity="0.75" TextWrapping="Wrap" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+    </TabControl>
+
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right" Margin="0,10,0,0">
+      <TextBlock x:Name="StatusText" VerticalAlignment="Center" FontSize="12" Opacity="0.75" />
+      <Button x:Name="CancelButton" Content="Cerrar" />
+      <Button x:Name="SaveButton" Content="Guardar" Classes="accent" />
+    </StackPanel>
+  </Grid>
+</Window>

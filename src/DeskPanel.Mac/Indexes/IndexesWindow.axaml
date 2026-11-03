@@ -1,0 +1,78 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:cfg="using:DeskPanel.Core.Configuration"
+        xmlns:idx="using:DeskPanel.Mac.Indexes"
+        x:Class="DeskPanel.Mac.Indexes.IndexesWindow"
+        Title="Índices"
+        Width="1000" Height="700"
+        WindowStartupLocation="CenterScreen">
+  <Grid ColumnDefinitions="230,12,*" RowDefinitions="*,Auto" Margin="12">
+
+    <Grid Grid.Row="0" Grid.Column="0" RowDefinitions="*,Auto,Auto" RowSpacing="8">
+      <ListBox x:Name="DefinitionsList">
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="cfg:IndexDefinition">
+            <TextBlock Text="{Binding Name}" />
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8">
+        <Button x:Name="NewButton" Content="Nuevo" />
+        <Button x:Name="DeleteButton" Content="Quitar" />
+      </StackPanel>
+      <StackPanel Grid.Row="2" Spacing="8">
+        <Button x:Name="UpdateAllButton" Content="Actualizar todos" HorizontalAlignment="Stretch" />
+        <Button x:Name="OpenStorageButton" Content="Abrir almacén" HorizontalAlignment="Stretch" />
+      </StackPanel>
+    </Grid>
+
+    <Grid Grid.Row="0" Grid.Column="2" RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" RowSpacing="6">
+      <TextBlock x:Name="HintText" Text="Pulsa «Nuevo» para crear un índice." Opacity="0.7" />
+
+      <StackPanel Grid.Row="1" x:Name="FormTop" Spacing="6">
+        <TextBlock Text="Nombre (también es el nombre de su carpeta en el almacén)" FontWeight="SemiBold" />
+        <TextBox x:Name="NameBox" />
+        <TextBlock Text="Carpeta base" FontWeight="SemiBold" Margin="0,6,0,0" />
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+          <TextBox x:Name="BaseRootBox" />
+          <Button x:Name="BrowseButton" Grid.Column="1" Content="Elegir…" />
+        </Grid>
+        <TextBlock Text="Extensiones (vacío = todas las compatibles)" FontWeight="SemiBold" Margin="0,6,0,0" />
+        <TextBox x:Name="ExtensionsBox" TextWrapping="Wrap" Height="60" AcceptsReturn="True" />
+        <CheckBox x:Name="RecursiveBox" Content="Incluir subcarpetas" />
+      </StackPanel>
+
+      <TextBlock Grid.Row="2" x:Name="TreeLabel" Text="Carpetas a indexar (ninguna marcada = toda la carpeta base)" FontWeight="SemiBold" Margin="0,6,0,0" />
+
+      <TreeView Grid.Row="4" x:Name="FolderTree">
+        <TreeView.Styles>
+          <Style Selector="TreeViewItem" x:DataType="idx:FolderNode">
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+          </Style>
+        </TreeView.Styles>
+        <TreeView.ItemTemplate>
+          <TreeDataTemplate x:DataType="idx:FolderNode" ItemsSource="{Binding Children}">
+            <StackPanel Orientation="Horizontal" Spacing="4">
+              <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" IsEnabled="{Binding IsSelectable}" MinWidth="0" />
+              <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+            </StackPanel>
+          </TreeDataTemplate>
+        </TreeView.ItemTemplate>
+      </TreeView>
+
+      <StackPanel Grid.Row="5" Spacing="8" Margin="0,8,0,0">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button x:Name="SaveButton" Content="Guardar" />
+          <Button x:Name="UpdateButton" Content="Actualizar índice" />
+          <Button x:Name="RebuildButton" Content="Reconstruir" />
+          <Button x:Name="CancelButton" Content="Cancelar" />
+          <Button x:Name="LogButton" Content="Ver registro" />
+        </StackPanel>
+        <ProgressBar x:Name="Progress" Minimum="0" Maximum="1" Height="8" />
+        <TextBlock x:Name="InfoText" FontSize="12" Opacity="0.75" TextWrapping="Wrap" />
+      </StackPanel>
+    </Grid>
+
+    <TextBlock Grid.Row="1" Grid.ColumnSpan="3" x:Name="StatusText" Margin="0,8,0,0" FontSize="12" Opacity="0.85" TextWrapping="Wrap" />
+  </Grid>
+</Window>

@@ -1,0 +1,105 @@
+# ============================================================
+# AUDIO PIPELINE - CONFIGURACIÓN CENTRAL
+# ============================================================
+
+# --- Rutas ---
+paths:
+  input_dir: "input"        # Carpeta vigilada por fswatch
+  output_dir: "output"      # Resultados finales
+  temp_dir: "tmp"           # Archivos intermedios (se borran al acabar)
+
+# --- Backend de inferencia ---
+backend:
+  # true  → usa CoreML (solo Whisper, solo macOS)
+  # false → usa PyTorch estándar (compatible con cualquier OS)
+  use_coreml: false
+
+# --- Fase 1: Limpieza de ruido ---
+denoise:
+  enabled: true
+  # Tamaño del chunk en segundos para procesar audio largo
+  chunk_seconds: 60
+  # Modelo de DeepFilterNet (df3 es el más preciso)
+  model: "DeepFilterNet3"
+  # --- Exportacion de audio final ---
+  export:
+    format: "m4a"
+    bitrate: "128k"
+
+# --- Fase 2: Eliminación de vacilaciones ---
+edit:
+  enabled: true
+  # Silencio mínimo a eliminar (segundos). Silencios menores se dejan.
+  min_silence_seconds: 1.5
+  # Duración del crossfade en los cortes para que no se note (milisegundos)
+  crossfade_ms: 30
+  # Muletillas y fillers a detectar (en minúsculas, el script normaliza)
+  fillers:
+    - "ehh"
+    - "mmm"
+    - "bueno"
+    - "o sea"
+    - "¿no?"
+    - "este"
+    - "pues"
+    - "o sea que"
+    - "la verdad"
+    - "en plan"
+    - "vale"
+    - "¿Vale?"
+
+# --- Fase 3: Transcripción ---
+transcribe:
+  enabled: true
+  # Modelos disponibles: tiny, base, small, medium, large-v2, large-v3, turbo
+  # En M2 Pro con 32 GB, large-v3 va bien. turbo es más rápido con menos precisión.
+  model: "large-v3"
+  language: "es"
+  # Transcripción con timestamps a nivel de palabra (necesario para fase 2 también)
+  word_timestamps: true
+
+# --- Fase 4: Generación de contenido (LLM local) ---
+content:
+  enabled: true
+  # URL del servidor local. LM Studio: http://localhost:1234/v1
+  # Ollama: http://localhost:11434/v1
+  lm_studio_url: "http://localhost:46357/v1"
+  # Nombre exacto del modelo como aparece en LM Studio
+  model_name: "llama-3.1-8b-instruct"
+  # Temperatura: 0.3 para respuestas consistentes, 0.7 para más creatividad
+  temperature: 0.5
+  # Idioma del contenido generado
+  output_language: "es"
+  # Número de palabras clave a generar
+  num_keywords: 5
+  # Tono del blog post (formal, informal, divulgativo, técnico...)
+  blog_tone: "divulgativo"
+  # Modelo especifico para generacion de blog (deja vacio para usar model_name)
+  model_name_content: "command-r-08-2024"
+  
+  # Gemini API
+  output_language: "es"
+  blog_tone: "profesional y cercano"
+  num_keywords: 5
+
+# Nueva sección para Gemini
+gemini:
+  api_key: ""
+  model_name: "gemini-2.5-pro" # O "gemini-3.1-pro" según prefieras
+  temperature: 0.7
+  
+# --- Fase 5: Publicación en WordPress ---
+wordpress:
+  enabled: true
+  url: "https://rfog.es"           # Sin barra al final
+  username: ""
+  # Application Password generado en WP > Usuarios > Perfil > Application Passwords
+  app_password: ""
+  # Estado del post al publicar: draft (borrador) o publish (directo)
+  post_status: "draft"
+  # Categoría por defecto si no se especifica
+  default_category: "Podcastexto"
+
+# --- Integraciones externas ---
+integrations:
+  devonthink_inbox: "~/Library/Application Support/DEVONthink/Inbox"

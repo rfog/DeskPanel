@@ -1,0 +1,45 @@
+/*
+  DeskPanel – default article style (A4).
+  Page size and margins come from the PDF profile in deskpanel.json; do not set @page size here,
+  or Chromium may override the profile and the two will disagree.
+*/
+:root {
+  --ink: #1c2530;
+  --muted: #5e6b7a;
+  --line: #d8dee5;
+  --accent: #16656e;
+}
+
+html { font-size: 11pt; }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Segoe UI Variable Text", "Segoe UI", Arial, sans-serif;
+  line-height: 1.5;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.dp-header { border-bottom: 1px solid var(--line); margin-bottom: 1.2em; padding-bottom: 0.6em; }
+.dp-title { font-size: 1.9em; line-height: 1.2; margin: 0 0 0.3em; font-weight: 600; }
+.dp-meta { color: var(--muted); font-size: 0.9em; margin: 0; }
+.dp-link { font-size: 0.8em; margin: 0.3em 0 0; word-break: break-all; }
+.dp-link a { color: var(--accent); text-decoration: none; }
+
+.dp-content h1, .dp-content h2, .dp-content h3 { line-height: 1.25; break-after: avoid; }
+.dp-content p { margin: 0 0 0.8em; orphans: 3; widows: 3; }
+.dp-content a { color: var(--accent); }
+.dp-content img, .dp-content video, .dp-content iframe { max-width: 100%; height: auto; }
+.dp-content img { display: block; margin: 0.8em auto; break-inside: avoid; }
+.dp-content figure { margin: 1em 0; break-inside: avoid; }
+.dp-content figcaption { color: var(--muted); font-size: 0.85em; text-align: center; }
+.dp-content blockquote { border-left: 3px solid var(--line); margin: 1em 0; padding: 0 1em; color: var(--muted); }
+.dp-content pre, .dp-content code { font-family: "Cascadia Mono", Consolas, monospace; font-size: 0.9em; }
+.dp-content pre { background: #f4f6f8; padding: 0.8em; white-space: pre-wrap; break-inside: avoid; }
+.dp-content table { border-collapse: collapse; width: 100%; font-size: 0.9em; }
+.dp-content td, .dp-content th { border: 1px solid var(--line); padding: 0.3em 0.5em; }
+
+/* Inoreader and many feeds inject share bars and tracking pixels that are noise on paper. */
+.dp-content img[width="1"], .dp-content img[height="1"],
+.dp-content .feedflare, .dp-content .share, .dp-content .social { display: none !important; }

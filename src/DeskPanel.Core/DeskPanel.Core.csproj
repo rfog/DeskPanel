@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Plain net10.0 on purpose: this project must stay UI- and Windows-free so a future MAUI viewer can reference it. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>DeskPanel.Core</RootNamespace>
+  </PropertyGroup>
+</Project>

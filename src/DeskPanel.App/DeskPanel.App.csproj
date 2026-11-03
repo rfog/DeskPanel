@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- WinForms is referenced only for NotifyIcon and Screen; implicit usings are disabled to avoid WPF/WinForms type ambiguities. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>DeskPanel.App</RootNamespace>
+    <AssemblyName>DeskPanel</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Regenerate with tools\New-AppIcon.ps1. WPF windows and the taskbar pick this icon up from the exe automatically. -->
+    <ApplicationIcon>..\..\assets\icons\deskpanel.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DeskPanel.Core\DeskPanel.Core.csproj" />
+    <ProjectReference Include="..\DeskPanel.Feeds\DeskPanel.Feeds.csproj" />
+    <ProjectReference Include="..\DeskPanel.Search\DeskPanel.Search.csproj" />
+    <ProjectReference Include="..\DeskPanel.Audio\DeskPanel.Audio.csproj" />
+    <!-- Web interface for phones/tablets. Brings the ASP.NET Core shared framework along (self-contained builds carry it). -->
+    <ProjectReference Include="..\DeskPanel.Remote\DeskPanel.Remote.csproj" />
+    <!-- Separate exe launched from the panel; referenced so it is built and copied next to DeskPanel.exe. -->
+    <ProjectReference Include="..\VerificaFicheros\VerificaFicheros.csproj" />
+  </ItemGroup>
+  <!--
+    Whisper.net ships native engines for every OS and CPU (about 70 MB that one Windows architecture never loads: Linux,
+    macOS, the other CPU, x86 and the Linux Vulkan build). Only the publish output is trimmed; the Debug/Release build
+    folders stay complete. One target per architecture because each keeps its own runtimes\win-* folder.
+  -->
+  <Target Name="PruneForeignWhisperRuntimes" AfterTargets="Publish" Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+    <RemoveDir Directories="$(PublishDir)runtimes\linux-arm;$(PublishDir)runtimes\linux-arm64;$(PublishDir)runtimes\linux-x64;$(PublishDir)runtimes\macos-arm64;$(PublishDir)runtimes\macos-x64;$(PublishDir)runtimes\win-arm64;$(PublishDir)runtimes\win-x86;$(PublishDir)runtimes\vulkan\linux-x64" />
+    <Delete Files="$(PublishDir)ggml-metal.metal" />
+  </Target>
+  <!-- Whisper.net's Vulkan engine is x64 only, so on ARM64 the whole vulkan folder goes and Whisper runs on the CPU engine. -->
+  <Target Name="PruneForeignWhisperRuntimesArm64" AfterTargets="Publish" Condition="'$(RuntimeIdentifier)' == 'win-arm64'">
+    <RemoveDir Directories="$(PublishDir)runtimes\linux-arm;$(PublishDir)runtimes\linux-arm64;$(PublishDir)runtimes\linux-x64;$(PublishDir)runtimes\macos-arm64;$(PublishDir)runtimes\macos-x64;$(PublishDir)runtimes\win-x64;$(PublishDir)runtimes\win-x86;$(PublishDir)runtimes\vulkan" />
+    <Delete Files="$(PublishDir)ggml-metal.metal" />
+  </Target>
+
+  <ItemGroup>
+    <!-- pdf.js viewer and CSS templates ship next to the exe; the viewer is served through WebView2 resource interception. -->
+    <None Include="..\..\assets\**\*" LinkBase="assets" CopyToOutputDirectory="PreserveNewest" />
+
+    <!-- The audio tools installer ships with the app so it can be copied to other machines (Settings › Audio explains how). -->
+    <None Include="..\..\tools\Install-AudioTools.ps1" Link="assets\tools\Install-AudioTools.ps1" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\LICENSE;..\..\THIRD-PARTY-NOTICES.md" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

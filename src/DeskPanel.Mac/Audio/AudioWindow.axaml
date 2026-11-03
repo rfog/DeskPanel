@@ -1,0 +1,39 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:au="using:DeskPanel.Mac.Audio"
+        x:Class="DeskPanel.Mac.Audio.AudioWindow"
+        Title="Audio"
+        Width="900" Height="720"
+        WindowStartupLocation="CenterScreen">
+  <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,Auto,Auto" Margin="12" RowSpacing="8">
+
+    <TextBlock x:Name="WarningText" Foreground="OrangeRed" TextWrapping="Wrap" IsVisible="False" />
+
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8">
+      <Button x:Name="RefreshButton" Content="Actualizar lista" />
+      <Button x:Name="OpenInputButton" Content="Abrir carpeta de entrada" />
+      <Button x:Name="ProcessButton" Content="Procesar seleccionados" Classes="accent" />
+      <Button x:Name="CancelButton" Content="Cancelar" />
+    </StackPanel>
+
+    <TextBlock Grid.Row="2" Text="Audios pendientes" FontWeight="SemiBold" />
+
+    <ScrollViewer Grid.Row="3" MaxHeight="220">
+      <ItemsControl x:Name="FilesList">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="au:AudioFileItem">
+            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding Name}" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+
+    <ProgressBar Grid.Row="4" x:Name="Progress" Minimum="0" Maximum="100" Height="8" />
+    <TextBlock Grid.Row="5" x:Name="StepText" FontSize="12" Opacity="0.85" />
+
+    <Grid Grid.Row="6" RowDefinitions="Auto,*" RowSpacing="4" Height="260">
+      <TextBlock x:Name="StatusText" FontSize="12" Opacity="0.85" TextWrapping="Wrap" />
+      <TextBox Grid.Row="1" x:Name="LogBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap" FontFamily="Menlo" FontSize="11" />
+    </Grid>
+  </Grid>
+</Window>

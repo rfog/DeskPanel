@@ -1,0 +1,13 @@
+{
+  "solution": {
+    "path": "DeskPanel.sln",
+    "projects": [
+      "src\\DeskPanel.Core\\DeskPanel.Core.csproj",
+      "src\\DeskPanel.Feeds\\DeskPanel.Feeds.csproj",
+      "src\\DeskPanel.Search\\DeskPanel.Search.csproj",
+      "src\\DeskPanel.Audio\\DeskPanel.Audio.csproj",
+      "src\\DeskPanel.Pdf.Chromium\\DeskPanel.Pdf.Chromium.csproj",
+      "src\\DeskPanel.Mac\\DeskPanel.Mac.csproj"
+    ]
+  }
+}

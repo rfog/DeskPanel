@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DeskPanel.Mac.MainWindow"
+        Title="DeskPanel"
+        Width="460" Height="520"
+        WindowStartupLocation="CenterScreen">
+  <StackPanel Margin="24" Spacing="12">
+    <TextBlock Text="DeskPanel" FontSize="24" FontWeight="SemiBold" />
+
+    <!-- Entry points are disabled until the phase that implements each one lands. -->
+    <Button x:Name="FeedsButton" Content="Feeds" HorizontalAlignment="Stretch" />
+    <Button x:Name="AudioButton" Content="Audio" HorizontalAlignment="Stretch" />
+    <Button x:Name="SearchIndexesButton" Content="Buscar en índices" HorizontalAlignment="Stretch" />
+    <Button x:Name="SearchDevonthinkButton" Content="Buscar en DEVONthink" HorizontalAlignment="Stretch" />
+    <Button x:Name="IndexesButton" Content="Índices" HorizontalAlignment="Stretch" />
+    <Button x:Name="FoldersButton" Content="Carpetas" HorizontalAlignment="Stretch" />
+    <Button x:Name="SettingsButton" Content="Ajustes" HorizontalAlignment="Stretch" />
+    <Button x:Name="LogButton" Content="Abrir registro" HorizontalAlignment="Stretch" />
+
+    <Border Height="1" Opacity="0.2" Background="Gray" Margin="0,8" />
+    <TextBlock x:Name="StatusText" FontSize="12" Opacity="0.7" TextWrapping="Wrap" />
+  </StackPanel>
+</Window>

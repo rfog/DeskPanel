@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:f="using:DeskPanel.Mac.Folders"
+        x:Class="DeskPanel.Mac.Folders.FoldersWindow"
+        Title="Carpetas"
+        Width="760" Height="640"
+        WindowStartupLocation="CenterScreen">
+  <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="12" RowSpacing="8">
+    <TextBox x:Name="FilterBox" PlaceholderText="Filtrar por nombre, categoría o ruta" />
+
+    <ListBox x:Name="FolderList" Grid.Row="1">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="f:FolderRow">
+          <StackPanel Margin="2,2" Spacing="1">
+            <TextBlock Text="{Binding Title}" FontWeight="{Binding TitleWeight}" Opacity="{Binding TitleOpacity}" Margin="{Binding TitleMargin}" />
+            <TextBlock Text="{Binding Path}" IsVisible="{Binding IsEntry}" FontSize="12" Opacity="0.6" TextWrapping="Wrap" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8">
+      <Button x:Name="OpenButton" Content="Abrir en Finder" />
+    </StackPanel>
+    <TextBlock Grid.Row="3" x:Name="StatusText" FontSize="12" Opacity="0.8" TextWrapping="Wrap" />
+  </Grid>
+</Window>

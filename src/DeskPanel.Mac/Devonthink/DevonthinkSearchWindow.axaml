@@ -1,0 +1,51 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dt="using:DeskPanel.Mac.Devonthink"
+        x:Class="DeskPanel.Mac.Devonthink.DevonthinkSearchWindow"
+        Title="Buscar en DEVONthink"
+        Width="1000" Height="700"
+        WindowStartupLocation="CenterScreen">
+  <Grid RowDefinitions="Auto,Auto,*,Auto,Auto" Margin="12" RowSpacing="8">
+
+    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+      <TextBox x:Name="QueryBox" PlaceholderText="Consulta con la sintaxis de DEVONthink (p. ej. kind:pdf tags:factura created&gt;=2025-01-01)" />
+      <Button x:Name="SearchButton" Grid.Column="1" Content="Buscar" IsDefault="True" />
+    </Grid>
+
+    <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+      <TextBlock Text="Bases de datos:" VerticalAlignment="Center" FontWeight="SemiBold" />
+      <ItemsControl x:Name="DatabasesList" Grid.Column="1">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="dt:SelectableDatabase">
+            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding Name}" Margin="0,0,14,0" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+      <Button x:Name="RefreshDatabasesButton" Grid.Column="2" Content="Releer bases" />
+    </Grid>
+
+    <ListBox x:Name="ResultsList" Grid.Row="2">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="dt:DevonthinkHit">
+          <StackPanel Spacing="2" Margin="2,4">
+            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" />
+            <TextBlock FontSize="12" Opacity="0.65" TextWrapping="Wrap">
+              <Run Text="{Binding DatabaseName}" /><Run Text=" · " /><Run Text="{Binding Location}" /><Run Text=" · " /><Run Text="{Binding Kind}" />
+            </TextBlock>
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
+      <Button x:Name="OpenButton" Content="Abrir en DEVONthink" />
+    </StackPanel>
+
+    <TextBlock Grid.Row="4" x:Name="StatusText" FontSize="12" Opacity="0.8" TextWrapping="Wrap" />
+  </Grid>
+</Window>

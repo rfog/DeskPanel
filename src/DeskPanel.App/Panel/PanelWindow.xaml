@@ -1,0 +1,93 @@
+<Window x:Class="DeskPanel.App.Panel.PanelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:panel="clr-namespace:DeskPanel.App.Panel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=panel:PanelViewModel}"
+        x:ClassModifier="internal"
+        Title="DeskPanel" Width="580" SizeToContent="Height" MaxHeight="720"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True"
+        FontFamily="{StaticResource UiFont}" FontSize="13" Foreground="{StaticResource InkBrush}">
+  <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
+          CornerRadius="8" Padding="16,14,16,16" Margin="12">
+    <Border.Effect>
+      <DropShadowEffect BlurRadius="18" ShadowDepth="3" Opacity="0.22" />
+    </Border.Effect>
+    <DockPanel>
+      <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+        <TextBlock Text="DeskPanel" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+        <TextBlock Text="Esc para cerrar" Foreground="{StaticResource MutedBrush}" FontSize="11"
+                   HorizontalAlignment="Right" VerticalAlignment="Center" />
+      </DockPanel>
+
+      <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Actions}" KeyboardNavigation.TabNavigation="Continue">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate DataType="{x:Type panel:PanelActionItem}">
+            <Button Style="{StaticResource PanelActionButton}" Command="{Binding Command}" ToolTip="{Binding Action.ToolTip}"
+                    ToolTipService.ShowOnDisabled="True" AllowDrop="{Binding AcceptsFiles}"
+                    DragEnter="OnActionDragOver" DragOver="OnActionDragOver" Drop="OnActionDrop">
+              <StackPanel>
+                <TextBlock Style="{StaticResource IconGlyph}" Text="{Binding Action.Glyph}" FontSize="22"
+                           HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}" Margin="0,0,0,6" />
+                <TextBlock Text="{Binding Action.Title}" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" />
+              </StackPanel>
+            </Button>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
+      <TextBlock DockPanel.Dock="Top" Text="Carpetas" Style="{StaticResource SectionTitle}" />
+      <TextBox x:Name="FilterBox" DockPanel.Dock="Top" Text="{Binding FolderFilter, UpdateSourceTrigger=PropertyChanged}"
+               Padding="6,4" Margin="0,0,0,6" BorderBrush="{StaticResource LineBrush}"
+               ToolTip="Filtra por nombre, grupo o ruta; Enter abre la primera coincidencia" />
+
+      <ListBox x:Name="FolderList" ItemsSource="{Binding FoldersView}" MaxHeight="340" BorderThickness="0"
+               Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox.GroupStyle>
+          <GroupStyle>
+            <GroupStyle.HeaderTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Name}" FontSize="11" FontWeight="SemiBold"
+                           Foreground="{StaticResource MutedBrush}" Margin="4,8,0,2" />
+              </DataTemplate>
+            </GroupStyle.HeaderTemplate>
+          </GroupStyle>
+        </ListBox.GroupStyle>
+        <ListBox.ItemContainerStyle>
+          <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <Setter Property="AllowDrop" Value="True" />
+            <EventSetter Event="DragEnter" Handler="OnFolderDragOver" />
+            <EventSetter Event="DragOver" Handler="OnFolderDragOver" />
+            <EventSetter Event="Drop" Handler="OnFolderDrop" />
+          </Style>
+        </ListBox.ItemContainerStyle>
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="{x:Type panel:FolderEntry}">
+            <StackPanel Margin="2,3">
+              <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding Exists}" Value="False">
+                      <Setter Property="Opacity" Value="0.5" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </StackPanel.Style>
+              <TextBlock Text="{Binding Name}" />
+              <TextBlock Text="{Binding DisplayPath}" FontSize="11" Foreground="{StaticResource MutedBrush}"
+                         TextTrimming="CharacterEllipsis" ToolTip="{Binding DisplayPath}" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </DockPanel>
+  </Border>
+</Window>

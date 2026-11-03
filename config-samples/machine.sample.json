@@ -1,0 +1,25 @@
+// %LOCALAPPDATA%\DeskPanel\machine.json — one per machine, NEVER synced.
+// It is the only file that contains real drive paths.
+{
+  // Folder that holds deskpanel.json (and css/, feeds-read-state.json). Normally inside a synced folder.
+  "ConfigDirectory": "{Cloud}/DeskPanel/Config",
+
+  // Aliases used by every path in deskpanel.json. Same alias names on every machine, different local paths.
+  "Roots": {
+    "Cloud": "D:\\GoogleDrive\\Mi unidad",
+    "Nas": "D:\\SynologyDrive",
+    "Docs": "D:\\SynologyDrive\\Documentos"
+  },
+
+  // Web interface for phones/tablets (search only). Normally edited in Settings > Web. The password is not here:
+  // it is stored hashed in secrets.json (DPAPI).
+  "Web": {
+    "Enabled": false,
+    "Scope": "Lan",              // "Lan" = reachable from the local network, "Local" = this PC only
+    "Port": 8787,
+    "AllowDownloads": true,
+    "AllowActions": false,              // true = the web can also process audios and convert feed entries to PDF
+    "RemoteAddress": "192.168.1.200",   // other DeskPanel opened by the panel's "Web remota" button (port 8787 unless given)
+    "PublishedIndexes": [ "Manuales" ]
+  }
+}

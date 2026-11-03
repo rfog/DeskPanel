@@ -1,0 +1,33 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+TestResults/
+publish/
+
+# Release packages made by tools/Publish-DeskPanel.ps1 (zips of ~30-90 MB)
+dist/
+
+# Runtime files that appear in the repo root when the app is run from here: they hold the user's own
+# configuration (feed URLs with the Inoreader user id, read state), not source.
+/deskpanel.json
+/feeds-read-state.json
+/css/
+*.part
+
+.DS_Store
+.idea/
+
+# Legacy Mac audio scripts (docs/legacy-audio): keep the code for reference, never its credentials, audio or logs.
+/docs/legacy-audio/config.yaml
+/docs/legacy-audio/input/
+/docs/legacy-audio/output/
+/docs/legacy-audio/logs/
+/docs/legacy-audio/tmp/
+/docs/legacy-audio/*.app/
+__pycache__/
+*.pyc
+
+# Internal development notes (personal paths and setup): kept local, not published.
+/CLAUDE.md

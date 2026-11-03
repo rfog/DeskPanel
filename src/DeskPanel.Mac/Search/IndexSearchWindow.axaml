@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="using:DeskPanel.Search.Searching"
+        xmlns:ms="using:DeskPanel.Mac.Search"
+        x:Class="DeskPanel.Mac.Search.IndexSearchWindow"
+        Title="Buscar en índices"
+        Width="1000" Height="720"
+        WindowStartupLocation="CenterScreen">
+  <Grid RowDefinitions="Auto,Auto,*,Auto,Auto" Margin="12" RowSpacing="8">
+
+    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+      <TextBox x:Name="QueryBox" PlaceholderText="Consulta (AND por defecto; admite &quot;frases&quot;, OR, -excluir)" />
+      <Button x:Name="SearchButton" Grid.Column="1" Content="Buscar" IsDefault="True" />
+      <ComboBox x:Name="HistoryBox" Grid.Column="2" Width="220" PlaceholderText="Histórico" />
+    </Grid>
+
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12">
+      <TextBlock Text="Índices:" VerticalAlignment="Center" FontWeight="SemiBold" />
+      <ItemsControl x:Name="IndexesList">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="ms:SelectableIndex">
+            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="0,0,14,0">
+              <TextBlock Text="{Binding Label}" />
+            </CheckBox>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </StackPanel>
+
+    <ListBox x:Name="ResultsList" Grid.Row="2">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="s:SearchHit">
+          <StackPanel Spacing="2" Margin="2,4">
+            <TextBlock Text="{Binding FileName}" FontWeight="SemiBold" TextWrapping="Wrap" />
+            <TextBlock FontSize="12" Opacity="0.65" TextWrapping="Wrap">
+              <Run Text="{Binding IndexName}" /><Run Text=" · " /><Run Text="{Binding RelativePath}" />
+            </TextBlock>
+            <ms:SnippetBlock Snippet="{Binding Snippet}" FontSize="13" TextWrapping="Wrap" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
+      <Button x:Name="OpenButton" Content="Abrir" />
+      <Button x:Name="RevealButton" Content="Mostrar en Finder" />
+      <Button x:Name="ClearHistoryButton" Content="Borrar histórico" />
+    </StackPanel>
+
+    <TextBlock Grid.Row="4" x:Name="StatusText" FontSize="12" Opacity="0.8" TextWrapping="Wrap" />
+  </Grid>
+</Window>
